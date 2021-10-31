@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, Container, createStyles, Divider, Grid, Link, makeStyles, Theme, Typography } from "@material-ui/core";
+import { Container, createStyles, Divider, Grid, Link, makeStyles, Theme, Typography } from "@material-ui/core";
 import { Link as RouterLink } from "react-router-dom";
 
 import { toAbsoluteUrl } from "utils";
@@ -8,7 +8,7 @@ import packageInfo from "../../../package.json";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      marginTop: theme.spacing(4),
+      margin: theme.spacing(4, 0),
     },
     footer: {
       padding: theme.spacing(3, 0),
@@ -123,21 +123,17 @@ export function Footer() {
               </ul>
             </Grid>
           </Grid>
-
-          <Box justifyContent="space-between" display="flex">
-            <Typography color="textSecondary" variant="body2">
-              Web Design by&nbsp;
-              <Link href="https://blog.zuiyu1818.cn" color="secondary">
-                Zuiyu
-              </Link>
-              ，Copyright © 2019 - {new Date().getFullYear()} YYeTs
-            </Typography>
-
-            <Typography color="textSecondary" variant="body2">
-              v{packageInfo.version}
-            </Typography>
-          </Box>
         </footer>
+
+        <Typography color="textSecondary" variant="body2" align="center">
+          Web Design by&nbsp;
+          <Link href="https://blog.zuiyu1818.cn" color="secondary">
+            Zuiyu
+          </Link>
+        </Typography>
+        <Typography color="textSecondary" variant="body2" align="center">
+          YYeTsBot © 2019 - {new Date().getFullYear()} v{packageInfo.version}
+        </Typography>
       </Container>
     </div>
   );
