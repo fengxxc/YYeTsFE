@@ -122,7 +122,7 @@ export function LoginPage() {
           gtag("event", "login", { method: "password" });
           postMetrics("user").catch(noop);
 
-          dispatch(setUsername({ username: res.data.username, group: res.data.group }));
+          dispatch(setUsername({ username: res.data.username || values.username, group: res.data.group }));
           localStorage.setItem("username", values.username);
           enqueueSnackbar("登录成功", { variant: "success" });
         })
