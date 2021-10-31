@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Badge, Button, IconButton, Menu, MenuItem, Typography } from "@material-ui/core";
-import { bindMenu, bindTrigger, usePopupState } from "material-ui-popup-state/hooks";
+import { bindMenu, bindTrigger, PopupState, usePopupState } from "material-ui-popup-state/hooks";
 import { Notifications as NotificationsIcon } from "@material-ui/icons";
 import { useLocation } from "react-router-dom";
 import clsx from "clsx";
@@ -10,10 +10,44 @@ import { formatComment, noop } from "utils";
 import { useGoResourcePage } from "hooks";
 import { useStyles } from "./Styled";
 
+function CommentList(list: Array<any>, noticePopupState: PopupState) {
+  const toResourcePage = useGoResourcePage();
+
+  const handleClickComment = (notice: NoticeItem) => {
+    patchNotifications({ comment_id: notice.id, verb: "read" }).catch(noop);
+    noticePopupState.close();
+    toResourcePage(notice.resource_id);
+  };
+
+  const classes = useStyles();
+
+  return list.map((item, index) => (
+    <MenuItem
+      onClick={() => handleClickComment(item)}
+      key={item.id}
+      classes={{ root: clsx(classes.item, { [classes.noBorder]: index === list.length - 1 }) }}
+    >
+      <div className={classes.comment}>
+        <Typography noWrap color="textSecondary" style={{ fontSize: 14 }}>
+          <Typography variant="subtitle1" component="span" color="textPrimary">
+            {item.username}
+          </Typography>
+          &nbsp;回复了我的评论
+        </Typography>
+        <Typography variant="body2" noWrap>
+          {formatComment(item.content).text}
+        </Typography>
+      </div>
+      <Typography variant="body2" className={classes.rely} color="textSecondary">
+        {formatComment(item.reply_to_content).text}
+      </Typography>
+    </MenuItem>
+  ));
+}
+
 export function Notification() {
   const location = useLocation();
   const noticePopupState = usePopupState({ variant: "popover", popupId: "noticeMenu" });
-  const toResourcePage = useGoResourcePage();
 
   const SIZE = 5;
   const [page, setPage] = React.useState<number>(1);
@@ -47,12 +81,6 @@ export function Notification() {
     }
   }, [total, page]);
 
-  const handleClickComment = (notice: NoticeItem) => {
-    patchNotifications({ comment_id: notice.id, verb: "read" }).catch(noop);
-    noticePopupState.close();
-    toResourcePage(notice.resource_id);
-  };
-
   const handleLoadMore = () => {
     setPage((pre) => pre + 1);
   };
@@ -74,28 +102,7 @@ export function Notification() {
         transformOrigin={{ vertical: "top", horizontal: "right" }}
         classes={{ list: classes.list }}
       >
-        {unreadList.map((item, index) => (
-          <MenuItem
-            onClick={() => handleClickComment(item)}
-            key={item.id}
-            classes={{ root: clsx(classes.item, { [classes.noBorder]: index === unreadList.length - 1 }) }}
-          >
-            <div className={classes.comment}>
-              <Typography noWrap color="textSecondary" style={{ fontSize: 14 }}>
-                <Typography variant="subtitle1" component="span" color="textPrimary">
-                  {item.username}
-                </Typography>
-                &nbsp;回复了我的评论
-              </Typography>
-              <Typography variant="body2" noWrap>
-                {formatComment(item.content).text}
-              </Typography>
-            </div>
-            <Typography variant="body2" className={classes.rely} color="textSecondary">
-              {formatComment(item.reply_to_content).text}
-            </Typography>
-          </MenuItem>
-        ))}
+        {CommentList(unreadList, noticePopupState)}
 
         {unreadList.length > 0 && readList.length > 0 && (
           <Typography align="center" color="primary">
@@ -103,28 +110,7 @@ export function Notification() {
           </Typography>
         )}
 
-        {readList.map((item, index) => (
-          <MenuItem
-            onClick={() => handleClickComment(item)}
-            key={item.id}
-            classes={{ root: clsx(classes.item, { [classes.noBorder]: index === readList.length - 1 }) }}
-          >
-            <div className={classes.comment}>
-              <Typography noWrap color="textSecondary" style={{ fontSize: 14 }}>
-                <Typography variant="subtitle1" component="span" color="textPrimary">
-                  {item.username}
-                </Typography>
-                &nbsp;回复了我的评论
-              </Typography>
-              <Typography variant="body2" noWrap>
-                {formatComment(item.content).text}
-              </Typography>
-            </div>
-            <Typography variant="body2" className={classes.rely} color="textSecondary">
-              {formatComment(item.reply_to_content).text}
-            </Typography>
-          </MenuItem>
-        ))}
+        {CommentList(readList, noticePopupState)}
 
         {total > page * SIZE && (
           <Button onClick={handleLoadMore} fullWidth>

@@ -13,6 +13,7 @@ import {
   Link as MuLink,
   Divider,
   Tooltip,
+  Hidden,
 } from "@material-ui/core";
 import { AccountCircle, GitHub, Search, QuestionAnswer } from "@material-ui/icons";
 import { Link, useLocation } from "react-router-dom";
@@ -21,7 +22,7 @@ import { useSnackbar } from "notistack";
 
 import { logout, toAbsoluteUrl } from "utils";
 import { useAppDispatch, useAuth, useLoginBack } from "hooks";
-// import { Notification } from "features";
+import { Notification } from "features";
 import { setUsername } from "app/pages/login/userSlice";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -104,32 +105,34 @@ export function Header() {
         )}
 
         {/* Github */}
-        <IconButton color="inherit" {...bindTrigger(githubPopupState)}>
-          <GitHub />
-        </IconButton>
-        <Menu
-          {...bindMenu(githubPopupState)}
-          getContentAnchorEl={null}
-          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-          transformOrigin={{ vertical: "top", horizontal: "left" }}
-        >
-          <MenuItem onClick={githubPopupState.close}>
-            <MuLink href="https://github.com/tgbot-collection/YYeTsBot" color="inherit">
-              YYeTsBot
-            </MuLink>
-          </MenuItem>
-          <MenuItem onClick={githubPopupState.close}>
-            <MuLink href="https://github.com/tgbot-collection/YYeTsFE" color="inherit">
-              YYeTsFE
-            </MuLink>
-          </MenuItem>
-        </Menu>
+        <Hidden smDown>
+          <IconButton color="inherit" {...bindTrigger(githubPopupState)}>
+            <GitHub />
+          </IconButton>
+          <Menu
+            {...bindMenu(githubPopupState)}
+            getContentAnchorEl={null}
+            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            transformOrigin={{ vertical: "top", horizontal: "left" }}
+          >
+            <MenuItem onClick={githubPopupState.close}>
+              <MuLink href="https://github.com/tgbot-collection/YYeTsBot" color="inherit">
+                YYeTsBot
+              </MuLink>
+            </MenuItem>
+            <MenuItem onClick={githubPopupState.close}>
+              <MuLink href="https://github.com/tgbot-collection/YYeTsFE" color="inherit">
+                YYeTsFE
+              </MuLink>
+            </MenuItem>
+          </Menu>
+        </Hidden>
 
         {/* 个人信息 */}
         {username ? (
           <>
             {/* 消息提示 */}
-            {/* <Notification /> */}
+            <Notification />
 
             <IconButton color="inherit" {...bindTrigger(loginPopupState)}>
               <AccountCircle />
