@@ -105,12 +105,18 @@ export function Notification() {
         {CommentList(unreadList, noticePopupState)}
 
         {unreadList.length > 0 && readList.length > 0 && (
-          <Typography align="center" color="primary">
+          <Typography align="center" color="textPrimary">
             已读消息
           </Typography>
         )}
 
         {CommentList(readList, noticePopupState)}
+
+        {unreadList.length === 0 && readList.length === 0 && (
+          <Typography align="center" color="textPrimary">
+            暂无通知
+          </Typography>
+        )}
 
         {total > page * SIZE && (
           <Button onClick={handleLoadMore} fullWidth>
